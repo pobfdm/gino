@@ -1,5 +1,5 @@
-#include <gio/gio.h>
 #include <glib.h>
+#include <gio/gio.h>
 #include "utils.h" 
 
 gchar* mountCommand;
@@ -134,7 +134,7 @@ int main(int argc, char** argv )
  
 	//Gino Init
 	const gchar* base = g_path_get_dirname(argv[0]);
-	g_chdir (base); g_print("Current dir->%s\n",base);
+	g_chdir (base); 
 	
 	confFile=g_strdup_printf("%s", argv[1]);
 	init();
