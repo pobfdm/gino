@@ -16,7 +16,7 @@ gchar* commandOnInputDevice;
 void init()
 {
 	gchar* pid= g_strdup_printf("%d",getpid());
-	makeConfDirs();
+	
 	
 	alwaysMounts=GetKey(confFile,"Main" ,"alwaysMounts");
 	mountCommand=GetKey(confFile,"Main" ,"mountCommand");
@@ -125,19 +125,39 @@ void eventInputCallback(GFileMonitor     *monitor,
  
 int main(int argc, char** argv )
 {
- 
+	GError *error = NULL;
+	
+	//Parsing commandline
+	static GOptionEntry entries[] =
+	{
+	  { "conf", 'c', 0, G_OPTION_ARG_STRING, &confFile, "Custom config file", "<custom config file>" },
+	  { NULL }
+	};
+	
+	
+	GOptionContext *context;
+
+	context = g_option_context_new ("- Start gino with a  custom config file");
+	g_option_context_add_main_entries (context, entries, NULL);
+	//g_option_context_add_group (context, gtk_get_option_group (TRUE));
+	if (!g_option_context_parse (context, &argc, &argv, &error))
+	{
+	  g_print ("Option parsing failed: %s\n", error->message);
+	  exit (1);
+	}
+	if (confFile==NULL) makeConfDirs();
+	
+
+	//Gino Init
+	init();
+	
 	//Main glib Loop
 	GMainLoop *loop;
     loop = g_main_loop_new ( NULL , FALSE );
  
-	GError *error=NULL;
+	//GError *error=NULL;
  
-	//Gino Init
-	const gchar* base = g_path_get_dirname(argv[0]);
-	g_chdir (base); 
 	
-	confFile=g_strdup_printf("%s", argv[1]);
-	init();
 	
 	//Disk monitor
 	GFile *dirDisks= g_file_new_for_path ("/dev/disk/by-id/");
