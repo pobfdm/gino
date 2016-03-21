@@ -127,10 +127,15 @@ void scanConnectedRules(gchar* device)
 			
 			//"command" directive
 			command=GetKey(rulePath,"Rules" ,"command");
-			//g_print("Command->%s\n", command);
-			g_spawn_command_line_async (command, &error);
-			if (error!=NULL) { g_print(error->message); g_error_free (error);}
-			
+			if (g_strrstr (file, "-part" )!=NULL)
+			{
+				command=g_strdup_printf("%s %s",command, device);
+				g_spawn_command_line_async (command, &error);
+				if (error!=NULL) { g_print(error->message); g_error_free (error);}
+			}else{
+				g_spawn_command_line_async (command, &error);
+				if (error!=NULL) { g_print(error->message); g_error_free (error);}
+			}
 			
 			//add here another directive
 		}
