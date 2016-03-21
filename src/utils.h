@@ -5,4 +5,3 @@ void* SetKey(gchar* file, const gchar* group , const gchar* key, const gchar* co
 gint getUserId();
 gchar* getMountByDevice(gchar* device);
 void makeConfDirs();
-void parseCommandLine();

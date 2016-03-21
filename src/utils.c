@@ -215,9 +215,3 @@ pidFile=\n\
 	
 }
 
-void parseCommandLine()
-{
-
-	
-
-}

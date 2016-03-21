@@ -155,10 +155,6 @@ int main(int argc, char** argv )
 	GMainLoop *loop;
     loop = g_main_loop_new ( NULL , FALSE );
  
-	//GError *error=NULL;
- 
-	
-	
 	//Disk monitor
 	GFile *dirDisks= g_file_new_for_path ("/dev/disk/by-id/");
 	GFileMonitor *diskMonitor=g_file_monitor_directory (dirDisks,
