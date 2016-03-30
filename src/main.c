@@ -1,5 +1,6 @@
 #include <glib.h>
 #include <gio/gio.h>
+#include <stdlib.h>
 #include "utils.h" 
 
 gchar* mountCommand;
@@ -9,7 +10,7 @@ gchar* confFile;
 gchar* rulesDir;
 gchar* pidFile;
 gchar* commandOnInputDevice;
-
+gchar* logFile;
 
 
 
@@ -22,6 +23,7 @@ void init()
 	mountCommand=GetKey(confFile,"Main" ,"mountCommand");
 	openCommand=GetKey(confFile,"Main" ,"openCommand");
 	commandOnInputDevice=GetKey(confFile,"Main" ,"commandOnInputDevice");
+	logFile=GetKey(confFile,"Main" ,"logFile");
 	pidFile=GetKey(confFile,"Main" ,"pidFile");
 	if (pidFile!=NULL && g_strrstr (pidFile, "" )!=NULL) g_file_set_contents (pidFile,pid, -1,NULL);
 	
@@ -40,9 +42,9 @@ void eventDiskCallback(GFileMonitor     *monitor,
 	gchar* deviceFile=g_file_get_path (file);
  
 	
-	if (event_type==G_FILE_MONITOR_EVENT_CREATED) g_print("Device %s is connected. \n", deviceFile);
-	if (event_type==G_FILE_MONITOR_EVENT_DELETED) g_print("Device %s is disconnected. \n", deviceFile);
-	if (event_type==G_FILE_MONITOR_EVENT_CHANGED) g_print("Device %s is changed. \n", deviceFile);
+	if (event_type==G_FILE_MONITOR_EVENT_CREATED) putLog("Device %s is connected. \n", deviceFile);
+	if (event_type==G_FILE_MONITOR_EVENT_DELETED) putLog("Device %s is disconnected. \n", deviceFile);
+	if (event_type==G_FILE_MONITOR_EVENT_CHANGED) putLog("Device %s is changed. \n", deviceFile);
 	
 	//Try to mount partition
 	if (event_type==G_FILE_MONITOR_EVENT_CREATED && \
@@ -95,9 +97,9 @@ void eventInputCallback(GFileMonitor     *monitor,
 	gchar* deviceFile=g_file_get_path (file);
  
 	
-	if (event_type==G_FILE_MONITOR_EVENT_CREATED) g_print("Device %s is connected. \n", deviceFile);
-	if (event_type==G_FILE_MONITOR_EVENT_DELETED) g_print("Device %s is disconnected. \n", deviceFile);
-	if (event_type==G_FILE_MONITOR_EVENT_CHANGED) g_print("Device %s is changed. \n", deviceFile);
+	if (event_type==G_FILE_MONITOR_EVENT_CREATED) putLog("Device %s is connected. \n", deviceFile);
+	if (event_type==G_FILE_MONITOR_EVENT_DELETED) putLog("Device %s is disconnected. \n", deviceFile);
+	if (event_type==G_FILE_MONITOR_EVENT_CHANGED) putLog("Device %s is changed. \n", deviceFile);
 	
 	
 	

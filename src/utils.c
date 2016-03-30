@@ -2,10 +2,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <mntent.h>
-
+#include <time.h>
 
 extern gchar* rulesDir;
 extern gchar* confFile;
+extern gchar* logFile;
 gchar* confDir;
 
 
@@ -122,7 +123,7 @@ void scanConnectedRules(gchar* device)
 	{
 		if (g_strrstr (file, g_path_get_basename (device) )!=NULL)
 		{
-			g_print("*****Rule detected.*****\n");
+			putLog("Rule detected on %s",device);
 			rulePath=g_strdup_printf("%s/%s",ruleFolderConnected, file);
 			
 			//"command" directive
@@ -158,12 +159,11 @@ void scanDisconnectedRules(gchar* device)
 	{
 		if (g_strrstr (file, g_path_get_basename (device) )!=NULL)
 		{
-			g_print("*****Rule detected.*****\n");
+			putLog("Rule detected on %s",device);
 			rulePath=g_strdup_printf("%s/%s",ruleFolderConnected, file);
 			
 			//"command" directive
 			command=GetKey(rulePath,"Rules" ,"command");
-			g_print("Command->%s\n", command);
 			g_spawn_command_line_async (command, &error);
 			if (error!=NULL) { g_print(error->message); g_error_free (error);}
 			
@@ -186,6 +186,7 @@ openCommand=spacefm\n\
 rulesDir=\n\
 commandOnInputDevice=\n\
 pidFile=\n\
+logFile=\n\
 ";
 	
 	if (getUserId()==0)
@@ -220,3 +221,38 @@ pidFile=\n\
 	
 }
 
+
+gchar* getTime()
+{
+	gchar* output;
+	time_t rawtime;
+    struct tm * timeinfo;
+
+    time ( &rawtime );
+    timeinfo = localtime ( &rawtime );
+
+	output=g_strdup_printf("[%d/%d/%d %d:%d:%d]", timeinfo->tm_year + 1900, timeinfo->tm_mon + 1, timeinfo->tm_mday, timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec);
+	return output;
+}
+
+void putLog(gchar* message, gchar* deviceFile)
+{
+	gchar* msg;
+	msg=g_strdup_printf(message, deviceFile);
+	msg=g_strdup_printf("%s - %s",getTime(),msg);
+	if (g_file_test (logFile, G_FILE_TEST_EXISTS))
+	{
+		FILE * pFile;
+		pFile = fopen (logFile,"a+");
+		if (pFile!=NULL)
+		{
+			fputs (msg,pFile);
+			fclose (pFile);
+		}
+	}else{
+		g_print(msg);
+	}
+	
+	
+	
+}

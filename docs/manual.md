@@ -5,7 +5,7 @@ automounting, it can now be used to run arbitrary commands when events
 occurs.
 
 Gino uses a configuration file called gino.conf It can be in 
-`/etc/gino.conf` if you are root, or in `$HOME/config/gino/gino.conf` if 
+`/etc/gino.conf` if you are root, or in `$HOME/.config/gino/gino.conf` if 
 you are a user.
 
 
@@ -52,7 +52,7 @@ And then add in the connected or disconnected subfolder according to
 your needs.
 
 like `usb-SXX_Mass_Storage_Device_XXXXXX-0:0-part1.conf`
-You can get the name of the device launching in a terminal ./gino and 
+You can get the name of the device launching in a terminal `./gino` and 
 after inserting the device.
 
 
